@@ -19,7 +19,7 @@ const Cart = (props) => {
   );
 
   return (
-    <Modal>
+    <Modal showCart={props.showCart}>
       {cartItems}
       <div className={classes.total}>
         <span>Total Amount</span>
