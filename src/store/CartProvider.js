@@ -7,16 +7,39 @@ const defaultCartState = {
 };
 
 const cartReducer = (state, action) => {
-  if (action.type === "ADD") {
-    const updatedItems = state.items.concat(action.item);
-    const updatedTotal =
-      state.totalAmount + action.item.price * action.item.amount;
+  let updatedItems = [];
+  let updatedTotal = 0;
+
+  if (action.type === "ADD" || action.type === "REMOVE") {
+    let itemIndex = state.items.findIndex((f) => f.id === action.item.id);
+
+    if (itemIndex > -1) {
+      console.log(`existing item found at: ${itemIndex}`);
+      updatedItems = [...state.items];
+      let itemToUpdate = updatedItems[itemIndex];
+
+      if (action.item.amount === 0){
+        updatedItems = updatedItems.filter(f => f.id !== action.item.id);
+      }
+      else{
+        itemToUpdate.amount = action.item.amount;
+      }
+      
+      
+    } else {
+      updatedItems = state.items.concat(action.item);
+    }
+
+    updatedItems.forEach((item) => {
+      updatedTotal += item.price * item.amount;
+    });
 
     return {
       items: updatedItems,
       totalAmount: updatedTotal,
     };
-  }
+  } 
+  
   return defaultCartState;
 };
 
@@ -30,8 +53,8 @@ const CartProvider = (props) => {
     dispatchCartAction({ type: "ADD", item: item });
   };
 
-  const removeItemHandler = (id) => {
-    dispatchCartAction({ type: "REMOVE", id: id });
+  const removeItemHandler = (item) => {
+    dispatchCartAction({ type: "REMOVE", item: item });
   };
 
   const cartContext = {
