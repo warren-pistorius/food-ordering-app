@@ -33,6 +33,8 @@ const AddMeal = (props) => {
     };
 
     const save = await post("https://localhost:5001/api/Meals/add", newMeal);
+    console.log(save);
+
     cartContext.refreshChoices();
   };
 
