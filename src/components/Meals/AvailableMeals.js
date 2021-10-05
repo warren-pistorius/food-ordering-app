@@ -1,8 +1,10 @@
-import { React, useEffect } from "react";
+import { React, useEffect, useContext } from "react";
 import useHttp from "../../hooks/use-http";
 import classes from "./AvailableMeals.module.css";
 import Card from "../UI/Card";
 import MealItem from "./MealItem/MealItem";
+
+import CartContext from  "../../store/cart-context";
 
 // const DUMMY_MEALS = [
 //   {
@@ -34,14 +36,18 @@ import MealItem from "./MealItem/MealItem";
 const AvailableMeals = () => {
   const { get, data, isLoading } = useHttp();
 
+  const cartContext = useContext(CartContext);
+
   useEffect(() => {
-    const getData = async () => {
+
+    const getMeals = async () => {
       var result = await get("https://localhost:5001/api/meals/all");
       console.log(result);
     };
 
-    getData();
-  }, [get]);
+    getMeals();
+  }, [get, cartContext.choices]);
+
 
   const mealsList = data?.data?.map((meal) => (
     <MealItem

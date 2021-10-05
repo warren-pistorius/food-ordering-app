@@ -1,5 +1,7 @@
-import { useRef, useState } from "react";
+import { useRef, useState, useContext } from "react";
 import classes from "./AddMeal.module.css";
+import useHttp from "../../../hooks/use-http";
+import CartContext from "../../../store/cart-context";
 
 const AddMeal = (props) => {
   const [nameTouched, setNameTouched] = useState(false);
@@ -9,22 +11,29 @@ const AddMeal = (props) => {
   const [descriptionInvalid, setDescriptionInvalid] = useState(false);
   //   const [amountInvalid, setAmountInvalid] = useState(false);
 
+  const { post } = useHttp();
+
+  const cartContext = useContext(CartContext);
+
   const formIsInvalid =
     nameInvalid || descriptionInvalid || !nameTouched || !descriptionTouched;
 
   const nameRef = useRef();
+  const descriptionRef = useRef();
 
-  const submitFormHandler = (event) => {
+  const submitFormHandler = async (event) => {
     event.preventDefault();
 
     console.log(event);
 
     let newMeal = {
       name: nameRef.current.value,
-      desription: null,
+      description: descriptionRef.current.value,
       amount: 99,
     };
-    console.log(newMeal);
+
+    const save = await post("https://localhost:5001/api/Meals/add", newMeal);
+    cartContext.refreshChoices();
   };
 
   const validateName = (event) => {
@@ -76,6 +85,7 @@ const AddMeal = (props) => {
         </label>
         <br />
         <input
+          ref={descriptionRef}
           name="description"
           type="text"
           onBlur={validateDescription}
