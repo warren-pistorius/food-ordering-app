@@ -14,11 +14,11 @@ const Cart = (props) => {
   const hasItems = cartContext.items.length > 0;
 
   const cartItemRemoveHandler = (item) => {
-    cartContext.removeItem({ ...item, amount: (item.amount -= 1) });
+    cartContext.removeItem({ ...item, quantity: (item.quantity -= 1) });
   };
 
   const cartItemAddHandler = (item) => {
-    cartContext.addItem({ ...item, amount: (item.amount += 1) });
+    cartContext.addItem({ ...item, quantity: (item.quantity += 1) });
   };
 
   const orderHandler = () => {
@@ -29,13 +29,18 @@ const Cart = (props) => {
     setShowOrder(true);
   };
 
+  const hideCartHandler = () => {
+    setShowOrder(false);
+    props.showCart();
+  }
+
   const cartItems = (
     <ul className={classes["cart-items"]}>
       {cartContext.items.map((item) => (
         <CartItem
           key={item.id}
           name={item.name}
-          amount={item.amount}
+          quantity={item.quantity}
           price={item.price}
           onRemove={cartItemRemoveHandler.bind(null, item)}
           onAdd={cartItemAddHandler.bind(null, item)}
@@ -65,7 +70,7 @@ const Cart = (props) => {
           </div>
         </div>
 
-        {!showOrder && <Checkout showCart={showCartHandler} />}
+        {!showOrder && <Checkout showCart={showCartHandler} hideCart={hideCartHandler} />}
       </Modal>
     </>
   );

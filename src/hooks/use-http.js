@@ -4,7 +4,7 @@ import { useCallback, useState } from "react";
 const useHttp = () => {
  
   const [isLoading, setIsLoading] = useState(true);
-  const [error, setError] = useState(true);
+  const [error, setError] = useState('');
   const [data, setData] = useState({ data: [] });
 
   const get = useCallback(async (url) => {
@@ -13,6 +13,7 @@ const useHttp = () => {
       setIsLoading(true);
       response = await axios.get(url);
       setData(response);
+      setError('');
     } catch (error) {
       setError(error);
     }
@@ -27,8 +28,10 @@ const useHttp = () => {
       setIsLoading(true);
       response = await axios.post(url, data);
       setData(response);
+      setError('');
     } catch (error) {
       setError(error);
+      response = error;
     }
     setIsLoading(false);
 

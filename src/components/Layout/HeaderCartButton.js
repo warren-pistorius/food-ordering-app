@@ -35,7 +35,7 @@ const HeaderCartButton = (props) => {
       <span>Your cart</span>
       <span className={classes.badge}>
         {cardContext.items.reduce((curNum, item) => {
-          return curNum + item.amount;
+          return curNum + item.quantity;
         }, 0)}
       </span>
     </button>
