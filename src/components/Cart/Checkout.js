@@ -1,4 +1,4 @@
-import { React, useContext, useRef, useState } from "react";
+import { React, useContext, useRef } from "react";
 import useHttp from "../../hooks/use-http";
 import classes from "./Checkout.module.css";
 
