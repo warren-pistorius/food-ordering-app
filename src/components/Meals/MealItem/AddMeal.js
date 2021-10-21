@@ -4,106 +4,106 @@ import useHttp from "../../../hooks/use-http";
 import CartContext from "../../../store/cart-context";
 
 const AddMeal = (props) => {
-  const [nameTouched, setNameTouched] = useState(false);
-  const [descriptionTouched, setDescriptionTouched] = useState(false);
+    const [nameTouched, setNameTouched] = useState(false);
+    const [descriptionTouched, setDescriptionTouched] = useState(false);
 
-  const [nameInvalid, setNameInvalid] = useState(false);
-  const [descriptionInvalid, setDescriptionInvalid] = useState(false);
-  //   const [amountInvalid, setAmountInvalid] = useState(false);
+    const [nameInvalid, setNameInvalid] = useState(false);
+    const [descriptionInvalid, setDescriptionInvalid] = useState(false);
+    //   const [amountInvalid, setAmountInvalid] = useState(false);
 
-  const { post } = useHttp();
+    const { post } = useHttp();
 
-  const cartContext = useContext(CartContext);
+    const cartContext = useContext(CartContext);
 
-  const formIsInvalid =
-    nameInvalid || descriptionInvalid || !nameTouched || !descriptionTouched;
+    const formIsInvalid =
+        nameInvalid || descriptionInvalid || !nameTouched || !descriptionTouched;
 
-  const nameRef = useRef();
-  const descriptionRef = useRef();
+    const nameRef = useRef();
+    const descriptionRef = useRef();
 
-  const submitFormHandler = async (event) => {
-    event.preventDefault();
+    const submitFormHandler = async (event) => {
+        event.preventDefault();
 
-    console.log(event);
+        console.log(event);
 
-    let newMeal = {
-      name: nameRef.current.value,
-      description: descriptionRef.current.value,
-      amount: 99,
+        let newMeal = {
+            name: nameRef.current.value,
+            description: descriptionRef.current.value,
+            price: 99,
+        };
+
+        const save = await post("https://localhost:44374/api/Menu", newMeal);
+        console.log(save);
+
+        cartContext.refreshChoices();
     };
 
-    const save = await post("https://localhost:5001/api/Meals/add", newMeal);
-    console.log(save);
+    const validateName = (event) => {
+        setNameTouched(true);
 
-    cartContext.refreshChoices();
-  };
+        if (event.target.value.trim() === "") {
+            setNameInvalid(true);
+        } else {
+            setNameInvalid(false);
+        }
+    };
 
-  const validateName = (event) => {
-    setNameTouched(true);
+    const validateDescription = (event) => {
+        setDescriptionTouched(true);
 
-    if (event.target.value.trim() === "") {
-      setNameInvalid(true);
-    } else {
-      setNameInvalid(false);
-    }
-  };
+        if (event.target.value.trim() === "") {
+            setDescriptionInvalid(true);
+        }
 
-  const validateDescription = (event) => {
-    setDescriptionTouched(true);
+        if (event.target.value.trim().length < 5) {
+            setDescriptionInvalid(true);
+        } else {
+            setDescriptionInvalid(false);
+        }
+    };
 
-    if (event.target.value.trim() === "") {
-      setDescriptionInvalid(true);
-    }
+    return (
+        <section className={classes.meals}>
+            <h1>Add your own meal</h1>
 
-    if (event.target.value.trim().length < 5) {
-      setDescriptionInvalid(true);
-    } else {
-      setDescriptionInvalid(false);
-    }
-  };
-
-  return (
-    <section className={classes.meals}>
-      <h1>Add your own meal</h1>
-
-      <form onSubmit={submitFormHandler}>
-        <label className={classes["input-label"]} htmlFor="name">
-          Name
-        </label>
-        <br />
-        <input
-          ref={nameRef}
-          name="name"
-          type="text"
-          onBlur={validateName}
-          onKeyUp={validateName}
-        />
-        {nameInvalid && (
-          <p className={classes.error}>Please capture a name for the meal</p>
-        )}
-        <br />
-        <label className={classes["input-label"]} htmlFor="description">
-          Description
-        </label>
-        <br />
-        <input
-          ref={descriptionRef}
-          name="description"
-          type="text"
-          onBlur={validateDescription}
-          onKeyUp={validateDescription}
-        />
-        {descriptionInvalid && (
-          <p className={classes.error}>
-            Please capture a description greater than 4 characters
-          </p>
-        )}
-        <br />
-        <br />
-        <input type="submit" value="Add meal" disabled={formIsInvalid} />
-      </form>
-    </section>
-  );
+            <form onSubmit={submitFormHandler}>
+                <label className={classes["input-label"]} htmlFor="name">
+                    Name
+                </label>
+                <br />
+                <input
+                    ref={nameRef}
+                    name="name"
+                    type="text"
+                    onBlur={validateName}
+                    onKeyUp={validateName}
+                />
+                {nameInvalid && (
+                    <p className={classes.error}>Please capture a name for the meal</p>
+                )}
+                <br />
+                <label className={classes["input-label"]} htmlFor="description">
+                    Description
+                </label>
+                <br />
+                <input
+                    ref={descriptionRef}
+                    name="description"
+                    type="text"
+                    onBlur={validateDescription}
+                    onKeyUp={validateDescription}
+                />
+                {descriptionInvalid && (
+                    <p className={classes.error}>
+                        Please capture a description greater than 4 characters
+                    </p>
+                )}
+                <br />
+                <br />
+                <input type="submit" value="Add meal" disabled={formIsInvalid} />
+            </form>
+        </section>
+    );
 };
 
 export default AddMeal;

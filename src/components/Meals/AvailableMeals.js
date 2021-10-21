@@ -4,7 +4,7 @@ import classes from "./AvailableMeals.module.css";
 import Card from "../UI/Card";
 import MealItem from "./MealItem/MealItem";
 
-import CartContext from  "../../store/cart-context";
+import CartContext from "../../store/cart-context";
 
 // const DUMMY_MEALS = [
 //   {
@@ -34,39 +34,39 @@ import CartContext from  "../../store/cart-context";
 // ];
 
 const AvailableMeals = () => {
-  const { get, data, isLoading } = useHttp();
+    const { get, data, isLoading } = useHttp();
 
-  const cartContext = useContext(CartContext);
+    const cartContext = useContext(CartContext);
 
-  useEffect(() => {
+    useEffect(() => {
 
-    const getMeals = async () => {
-      var result = await get("https://localhost:5001/api/meals/all");
-      console.log(result);
-    };
+        const getMeals = async () => {
+            var result = await get("https://localhost:44374/api/Menu");
+            console.log(result);
+        };
 
-    getMeals();
-  }, [get, cartContext.choices]);
+        getMeals();
+    }, [get, cartContext.choices]);
 
 
-  const mealsList = data?.data?.map((meal) => (
-    <MealItem
-      id={meal.id}
-      key={meal.id}
-      name={meal.name}
-      price={meal.amount}
-      description={meal.description}
-    />
-  ));
+    const mealsList = data?.data?.map((meal) => (
+        <MealItem
+            id={meal.menuItemId}
+            key={meal.menuItemId}
+            name={meal.name}
+            price={meal.price}
+            description={meal.description}
+        />
+    ));
 
-  return (
-    <section className={classes.meals}>
-      <Card>
-        {isLoading && <ul>isLoading</ul>}
-        {!isLoading && <ul>{mealsList}</ul>}
-      </Card>
-    </section>
-  );
+    return (
+        <section className={classes.meals}>
+            <Card>
+                {isLoading && <ul>isLoading</ul>}
+                {!isLoading && <ul>{mealsList}</ul>}
+            </Card>
+        </section>
+    );
 };
 
 export default AvailableMeals;
