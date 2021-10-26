@@ -5,13 +5,10 @@ import useHttp from "../hooks/use-http";
 const defaultCartState = {
     id: null,
     items: [],
-    totalAmount: 0,
-    choices: 0,
-    url: null,
-    postObject: null
+    totalAmount: 0
 };
 
-const cartReducer = (state, action) => {
+const cartReducer = async (state, action) => {
     let updatedItems = [];
     let updatedTotal = 0;
     let choices = 0;
@@ -31,39 +28,35 @@ const cartReducer = (state, action) => {
     }
 
     else if (action.type === "ADD" || action.type === "REMOVE") {
-        let itemIndex = state.items.findIndex((f) => f.id === action.item.id);
 
-        if (itemIndex > -1) {
-            console.log(`existing item found at: ${itemIndex}`);
-            updatedItems = [...state.items];
-            let itemToUpdate = updatedItems[itemIndex];
+        let newSelection = {
+            menuItemId: item.menuItemId,
+            cartId: retrievedCartState.id,
+            quantity: item.quantity,
+        };
 
-            if (action.item.quantity === 0) {
-                updatedItems = updatedItems.filter((f) => f.id !== action.item.id);
-            } else {
-                itemToUpdate.quantity = action.item.quantity;
-            }
-        } else {
-            updatedItems = state.items.concat(action.item);
-        }
+        let save = await post("https://localhost:44374/api/Selection", newSelection)
+        console.log(save.data);
 
-        updatedItems.forEach((item) => {
-            updatedTotal += item.price * item.quantity;
-        });
+        retrievedCartState.items = data?.data?.selections;
+        retrievedCartState.totalAmount = data?.data?.totalPrice;
+        
 
         return {
-            items: updatedItems,
-            totalAmount: updatedTotal,
-            choices
+            id: data?.data?.cartId,
+            items: data?.data?.selections,
+            totalAmount: data?.data?.totalPrice
         };
     }
 
-    return defaultCartState;
+    throw new Error(`Unhandled action type: ${action.type}`);
 };
 
 const CartProvider = (props) => {
     const { post, get, data, isLoading } = useHttp();
     var retrievedCartState = defaultCartState;
+
+    // if cart id is null get new cart
 
     useEffect(() => {
 
@@ -77,33 +70,34 @@ const CartProvider = (props) => {
 
     const [cartState, dispatchCartAction] = useReducer(
         cartReducer,
-        retrievedCartState
+        defaultCartState
     );
 
     const addItemHandler = async (item) => {
-        //dispatchCartAction({ type: "ADD", item: item });
+        dispatchCartAction({ type: "ADD", item: item });
 
-        let newSelection = {
+
+        /*let newSelection = {
             menuItemId: item.menuItemId,
             cartId: retrievedCartState.id,
             quantity: item.quantity,
         };
 
         let save = await post("https://localhost:44374/api/Selection", newSelection)
-        console.log(save.data);
+        console.log(save.data);*/
 
     };
 
     const removeItemHandler = async (item) => {
-        //dispatchCartAction({ type: "REMOVE", item: item });
-        let newSelection = {
+        dispatchCartAction({ type: "REMOVE", item: item });
+        /*let newSelection = {
             menuItemId: item.menuItemId,
             cartId: retrievedCartState.id,
             quantity: item.quantity,
         };
 
         let save = await post("https://localhost:44374/api/Selection", newSelection)
-        console.log(save.data);
+        console.log(save.data);*/
     };
 
     const refreshChoicesHandler = () => {
