@@ -29,7 +29,7 @@ const cartReducer = async (state, action) => {
 
     else if (action.type === "ADD" || action.type === "REMOVE") {
 
-        let newSelection = {
+        /*let newSelection = {
             menuItemId: item.menuItemId,
             cartId: retrievedCartState.id,
             quantity: item.quantity,
@@ -46,26 +46,41 @@ const cartReducer = async (state, action) => {
             id: data?.data?.cartId,
             items: data?.data?.selections,
             totalAmount: data?.data?.totalPrice
-        };
+        };*/
     }
 
     throw new Error(`Unhandled action type: ${action.type}`);
 };
 
 const CartProvider = (props) => {
-    const { post, get, data, isLoading } = useHttp();
+    const { post, conditionalGet, get, data, isLoading } = useHttp();
     var retrievedCartState = defaultCartState;
-
-    // if cart id is null get new cart
 
     useEffect(() => {
 
-        const getCart = async () => {
-            var result = await get("https://localhost:44374/api/Cart/4");
+        const getCartId = async () => {
+            var needNewCart = (retrievedCartState.id == null);
+            var result = await conditionalGet("https://localhost:44374/api/NewCart", needNewCart);
+            console.log(result);
+            if (result == null){
+                console.log("same cart");
+                return retrievedCartState.id;
+            }else{
+                console.log("new cart");
+                return result.data.cartId;
+            }
+            
+        };
+        
+        const getCart = async (cartId) => {
+            console.log("getting cart w id: " + cartId);
+            var result = await get("https://localhost:44374/api/Cart/" + cartId);
             console.log(result);
         };
 
-        getCart();
+        getCartId().then((value) => getCart(value));
+        
+
     }, [get]);
 
     const [cartState, dispatchCartAction] = useReducer(
@@ -74,30 +89,30 @@ const CartProvider = (props) => {
     );
 
     const addItemHandler = async (item) => {
-        dispatchCartAction({ type: "ADD", item: item });
+        //dispatchCartAction({ type: "ADD", item: item });
 
 
-        /*let newSelection = {
+        let newSelection = {
             menuItemId: item.menuItemId,
             cartId: retrievedCartState.id,
             quantity: item.quantity,
         };
 
         let save = await post("https://localhost:44374/api/Selection", newSelection)
-        console.log(save.data);*/
+        console.log(save.data);
 
     };
 
     const removeItemHandler = async (item) => {
-        dispatchCartAction({ type: "REMOVE", item: item });
-        /*let newSelection = {
+        //dispatchCartAction({ type: "REMOVE", item: item });
+        let newSelection = {
             menuItemId: item.menuItemId,
             cartId: retrievedCartState.id,
             quantity: item.quantity,
         };
 
         let save = await post("https://localhost:44374/api/Selection", newSelection)
-        console.log(save.data);*/
+        console.log(save.data);
     };
 
     const refreshChoicesHandler = () => {

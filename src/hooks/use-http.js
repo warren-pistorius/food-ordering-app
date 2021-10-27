@@ -7,6 +7,26 @@ const useHttp = () => {
   const [error, setError] = useState('');
   const [data, setData] = useState({ data: [] });
 
+  const conditionalGet = useCallback(async (url, execute) => {
+    if (execute){
+      let response = null;
+      try {
+        setIsLoading(true);
+        response = await axios.get(url);
+        setData(response);
+        setError('');
+      } catch (error) {
+        setError(error);
+      }
+      setIsLoading(false);
+
+      return response;
+    }
+
+    return null;
+
+  }, []);
+
   const get = useCallback(async (url) => {
     let response = null;
     try {
@@ -43,7 +63,8 @@ const useHttp = () => {
     error,
     data,
     get,
-    post
+    post, 
+    conditionalGet
   };
 };
 
