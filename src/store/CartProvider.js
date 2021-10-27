@@ -58,7 +58,7 @@ const CartProvider = (props) => {
 
     useEffect(() => {
 
-        const getCartId = async () => {
+        /*const getCartId = async () => {
             var needNewCart = (retrievedCartState.id == null);
             var result = await conditionalGet("https://localhost:44374/api/NewCart", needNewCart);
             console.log(result);
@@ -69,7 +69,11 @@ const CartProvider = (props) => {
                 console.log("new cart");
                 return result.data.cartId;
             }
-            
+
+            var result = await get("https://localhost:44374/api/NewCart");
+            console.log(result);
+            console.log("new cart");
+            return result.data.cartId;
         };
         
         const getCart = async (cartId) => {
@@ -78,8 +82,16 @@ const CartProvider = (props) => {
             console.log(result);
         };
 
-        getCartId().then((value) => getCart(value));
-        
+        getCartId().then((value) => getCart(value));*/
+
+
+        const getNewCart = async () => {
+            var result = await get("https://localhost:44374/api/NewCart");
+            console.log(result);
+            console.log("new cart");
+        };
+
+        getNewCart();
 
     }, [get]);
 
@@ -119,8 +131,13 @@ const CartProvider = (props) => {
         dispatchCartAction({ type: "REFRESH", choices: Date.now() });
     };
 
-    const clearHandler = () => {
-        dispatchCartAction({ type: "NEW" });
+    const clearHandler = async () => {
+        //dispatchCartAction({ type: "NEW" });
+        
+        var result = await get("https://localhost:44374/api/NewCart");
+        console.log(result);
+        console.log("new cart");
+        
     };
 
     // update cart state is data is not null
