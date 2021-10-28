@@ -5,7 +5,8 @@ import useHttp from "../hooks/use-http";
 const defaultCartState = {
     id: null,
     items: [],
-    totalAmount: 0
+    totalAmount: 0,
+    choices: 0
 };
 
 const cartReducer = async (state, action) => {

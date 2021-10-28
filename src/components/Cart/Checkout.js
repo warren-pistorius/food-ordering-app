@@ -11,13 +11,15 @@ const Checkout = (props) => {
   const cartContext = useContext(CartContext);
 
   const confirmOrderHandler = async () => {
-    var result = await post("https://localhost:5001/api/orders/add", {
-      person: nameRef.current.value,
-      address: addressRef.current.value,
-      orderItems: cartContext.items,
+
+    console.log(cartContext);
+    var result = await post("https://localhost:44374/api/Order", {
+      Name: nameRef.current.value,
+      Address: addressRef.current.value,
+      CartId: cartContext.id,
     });
 
-    if (result?.status === 201) {
+    if (result?.status === 200) {
       cartContext.clear();
       console.log(result);
       alert("Ordered :)");
