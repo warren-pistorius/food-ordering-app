@@ -51,7 +51,7 @@ const AvailableMeals = () => {
 
     const mealsList = data?.data?.map((meal) => (
         <MealItem
-            id={meal.menuItemId}
+            menuItemId={meal.menuItemId}
             key={meal.menuItemId}
             name={meal.name}
             price={meal.price}

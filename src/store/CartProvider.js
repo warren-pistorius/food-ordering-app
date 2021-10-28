@@ -102,13 +102,16 @@ const CartProvider = (props) => {
 
     const addItemHandler = async (item) => {
         //dispatchCartAction({ type: "ADD", item: item });
-
+        console.log(item);
+        console.log(item.menuItemId);
 
         let newSelection = {
             menuItemId: item.menuItemId,
             cartId: retrievedCartState.id,
             quantity: item.quantity,
         };
+
+        console.log(newSelection);
 
         let save = await post("https://localhost:44374/api/Selection", newSelection)
         console.log(save.data);
